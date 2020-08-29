@@ -2,8 +2,11 @@ type RootState = {
   recordList: RecordItem[],
   createRecordError: Error | null,
   createTagError: Error | null,
+  incomeTagList: Tag[],
+  paymentTagList: Tag[],
   tagList: Tag[],
   currentTag?: Tag
+  groupedList?: any;
 }
 type RecordItem = {
   tags: Tag[]
@@ -16,6 +19,8 @@ type RecordItem = {
 type Tag = {
   id: string;
   name: string;
+  iconName?: string;
+  selected?: boolean;
 }
 type TagListModel = {
   data: Tag[]
@@ -25,3 +30,10 @@ type TagListModel = {
   remove: (id: string) => boolean
   save: () => void
 }
+
+type Result = {
+  title: string,
+  incomeTotal?: number,
+  paymentTotal?: number,
+  items: RecordItem[]
+}[];

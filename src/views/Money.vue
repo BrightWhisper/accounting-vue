@@ -1,79 +1,44 @@
 <template>
   <Layout class-prefix="layout">
-    <NumberPad :value.sync="record.amount" @submit="saveRecord"/>
-    <Tabs :data-source="recordTypeList"
-      :value.sync="record.type"/>
-    <div class="createdAt">
-      <FormItem field-name="日期"
-        type="date"
-        placeholder="在这里输入日期"
-        :value.sync="record.createdAt"
-      />
-    </div>
-    <div class="notes">
-      <FormItem field-name="备注"
-        placeholder="在这里输入备注"
-        :value.sync="record.notes"
-      />
-    </div>
-    <Tags @update:value="record.tags = $event"/>
+    <EditLabel :value.sync="labelType"></EditLabel>
+
+    <FormItem :value="labelType"></FormItem>
+
+    <NumberPad :amount.sync="record.amount" :notes.sync="record.notes" @submit="saveRecord"/>
+
+
   </Layout>
 </template>
 
 <script lang="ts">
   import Vue from 'vue';
   import {Component} from 'vue-property-decorator';
-  import axios, {AxiosResponse} from 'axios';
   import NumberPad from '@/components/Money/NumberPad.vue';
   import FormItem from '@/components/Money/FormItem.vue';
-  import Tags from '@/components/Money/Tags.vue';
-  import Tabs from '@/components/Tabs.vue';
-  import recordTypeList from '@/constants/recordTypeList';
+  import EditLabel from '@/views/EditLabel.vue';
 
   @Component({
-    components: {Tabs, Tags, FormItem, NumberPad},
+    components: {EditLabel, FormItem, NumberPad},
   })
   export default class Money extends Vue {
-    get recordList() {
-      return this.$store.state.recordList;
-    }
-
-    recordTypeList = recordTypeList;
-
+    labelType: string = 'payment';
     record: RecordItem = {
       tags: [], notes: '', type: '-', amount: 0, createdAt: new Date().toISOString()
     };
 
-    created() {
-      this.$store.commit('fetchRecords');
-    }
 
-    mounted(){
-      async function getLocal(){
-        const dede =  await axios.get('http://localhost:50141');
-        const min = await axios.get('http://localhost:50141/min');
-        return [dede,min];
+    saveRecord({amount, notes, createdAt}: { amount: number, notes: string, createdAt: string }) {
+      if (this.labelType === 'income') {
+        this.record.type = '+';
+      } else {
+        this.record.type = '-';
       }
-      console.log(getLocal());
-
-      // getLocal().then((res)=>{
-      //   console.log(res);
-      // }).catch((error)=>{
-      //   console.log('error:',error);
-      // })
-    }
-    onUpdateNotes(value: string) {
-      this.record.notes = value;
-    }
-
-    saveRecord() {
-      if (!this.record.tags || this.record.tags.length === 0) {
-        return window.alert('请至少选择一个标签');
-      }
+      this.record.amount = amount;
+      this.record.notes = notes;
+      this.record.createdAt = createdAt;
       this.$store.commit('createRecord', this.record);
       if (this.$store.state.createRecordError === null) {
         window.alert('已保存');
-        this.record.notes = '';
       }
     }
   }
@@ -82,8 +47,9 @@
 <style lang="scss" scoped>
   ::v-deep .layout-content {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
+
   .notes {
     padding: 12px 0;
   }

@@ -18,7 +18,7 @@
     author: string = '顾城';
 
     mounted() {
-      setTimeout(() => this.$router.replace('/money'), 2000);
+      setTimeout(() => this.$router.replace('/labels'), 2000);
     }
   }
 </script>
@@ -35,8 +35,7 @@
       font-family: $font-song;
       font-size: 18px;
       text-align: center;
-      width: 100vh;
-      /*background:green;*/
+      background: rgb(249,250,245);
       > div{
         padding: 30px;
         &:nth-child(2){

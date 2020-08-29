@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <transition name="fade">
+    <transition name="change-route">
       <router-view/>
     </transition>
   </div>
@@ -25,11 +25,11 @@
     margin: 0 auto;
   }
 
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
+  .change-route-enter-active, .change-route-leave-active {
+    transition: opacity .3s;
   }
 
-  .fade-enter, .fade-leave-to {
+  .change-route-enter, .change-route-leave-to {
     opacity: 0;
   }
 </style>
